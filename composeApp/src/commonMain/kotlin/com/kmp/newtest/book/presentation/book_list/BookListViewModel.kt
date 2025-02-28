@@ -2,10 +2,8 @@
 
 package com.kmp.newtest.book.presentation.book_list
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kmp.newtest.book.data.repository.DefaultBookRepository
 import com.kmp.newtest.book.domain.Book
 import com.kmp.newtest.book.domain.BookRepository
 import com.kmp.newtest.core.domain.onError
@@ -16,7 +14,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -34,6 +31,7 @@ class BookListViewModel(
 
     private val cachedBooksList = emptyList<Book>()
     private var searchJob: Job? = null
+    private var observeFavoriteJob: Job? = null
 
 
     private val _state = MutableStateFlow(BookListState())
@@ -41,6 +39,7 @@ class BookListViewModel(
         if (cachedBooksList.isEmpty()) {
             observeSearchQuery()
         }
+        observeFavoriteBooks()
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000L), _state.value
     )
@@ -78,6 +77,15 @@ class BookListViewModel(
                 }
             }
         }
+    }
+
+    private fun observeFavoriteBooks() {
+        observeFavoriteJob?.cancel()
+        observeFavoriteJob = bookRepository.getFavoriteBooks().onEach { favoriteBooks ->
+            _state.update {
+                it.copy(favoriteBooks = favoriteBooks)
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun observeSearchQuery() {

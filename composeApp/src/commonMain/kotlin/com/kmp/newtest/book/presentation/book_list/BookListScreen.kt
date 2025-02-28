@@ -195,6 +195,7 @@ fun BookListScreen(state: BookListState, onAction: (BookListAction) -> Unit) {
                                             BookList(
                                                 books = state.searchResults,
                                                 onBookClick = {
+                                                    println("@#@#@")
                                                     onAction(BookListAction.OnBookClick(it))
                                                 },
                                                 modifier = Modifier.fillMaxSize(),
@@ -216,6 +217,7 @@ fun BookListScreen(state: BookListState, onAction: (BookListAction) -> Unit) {
                                     BookList(
                                         books = state.favoriteBooks,
                                         onBookClick = {
+                                            println("~!~!~!~")
                                             onAction(BookListAction.OnBookClick(it))
                                         },
                                         modifier = Modifier.fillMaxSize(),

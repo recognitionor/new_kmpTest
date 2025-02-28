@@ -27,14 +27,20 @@ fun BookList(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(items = books, key = {
-            it.id
-        }) { book ->
-            BookListItem(book = book,
-                modifier = Modifier.widthIn(max = 700.dp).fillMaxWidth().padding(16.dp),
+        items(
+            items = books,
+            key = { it.id }
+        ) { book ->
+            BookListItem(
+                book = book,
+                modifier = Modifier
+                    .widthIn(max = 700.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 onClick = {
-
-                })
+                    onBookClick(book)
+                }
+            )
         }
     }
 }
